@@ -11,6 +11,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -34,37 +35,36 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-        val easvMarker = MarkerOptions().position(EASV).title("EASV")
-        val bakerMarker = MarkerOptions().position(BAKER).title("Baker").icon(
+        val easvOptions = MarkerOptions().position(EASV).title("EASV")
+        val bakerOptions = MarkerOptions().position(BAKER).title("Baker").icon(
             BitmapDescriptorFactory.fromResource(
                 R.drawable.cake
             )
         )
-        val roundAboutMarker = MarkerOptions().position(ROUND).title("Round-about")
-        mMap.addMarker(easvMarker)
-        mMap.addMarker(bakerMarker)
-        mMap.addMarker(roundAboutMarker)
+        val roundAboutOptions = MarkerOptions().position(ROUND).title("Round-about")
+        val easvMarker = mMap.addMarker(easvOptions)
+        mMap.addMarker(bakerOptions)
+        mMap.addMarker(roundAboutOptions)
         mMap.moveCamera(CameraUpdateFactory.newLatLng(EASV))
+        mMap.setOnMarkerClickListener(object : GoogleMap.OnMarkerClickListener {
+            override fun onMarkerClick(marker: Marker): Boolean {
+                if (marker.equals(easvMarker))
+                    Log.d(TAG, "EASV is clicked...")
+                return false
+            }
+        })
 
         setupZoomlevels()
+
     }
 
     fun onClickEASV(view: View) {
         val level: Int = spinnerZoomLevel.getSelectedItem().toString().toInt()
         val viewPoint = CameraUpdateFactory.newLatLngZoom(EASV, level.toFloat())
-        // zoomlevel 0..21, where 0 is the world and 21 is single street
+
         // zoomlevel 0..21, where 0 is the world and 21 is single street
         Log.d(TAG, "Will zoom to easv to level $level")
         mMap.animateCamera(viewPoint)

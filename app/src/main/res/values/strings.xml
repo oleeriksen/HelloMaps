@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">HelloMaps</string>
-    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_maps">Hello Maps</string>
     <string name="header">Hello Maps</string>
+    <string name="title_activity_maps2">Map</string>
 </resources>
